@@ -1,315 +1,46 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Identification du Quénada</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #e8f0fe, #ffffff);
-      padding: 40px;
-      color: #222;
-      text-align: center;
+{
+  "ids": [
+    {
+      "id": "ID-001",
+      "dateEmission": "2024-05-01",
+      "photoFront": "https://via.placeholder.com/200x120?text=Front+ID",
+      "photoBack": "https://via.placeholder.com/200x120?text=Back+ID",
+      "photoVisage": "https://via.placeholder.com/80x80.png?text=Photo+ID",
+      "nom": "Lamarre",
+      "prenom": "Sophie"
+    },
+    {
+      "id": "ID-002",
+      "dateEmission": "2026-11-01",
+      "photoFront": "https://via.placeholder.com/200x120?text=Front+ID",
+      "photoBack": "https://via.placeholder.com/200x120?text=Back+ID",
+      "photoVisage": "https://via.placeholder.com/80x80.png?text=Photo+ID",
+      "nom": "Gagnon",
+      "prenom": "Marc"
     }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 30px;
-      color: #002c5a;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  ],
+  "cheques": [
+    {
+      "id": "CHQ-101",
+      "utilisé": false,
+      "photoFront": "https://via.placeholder.com/200x120?text=Chèque+Front",
+      "photoBack": "https://via.placeholder.com/200x120?text=Chèque+Back",
+      "nom": "Dufresne",
+      "prenom": "Amélie",
+      "montant": "1 100$",
+      "dateEmission": "2025-03-01",
+      "banque": "Desjardins"
+    },
+    {
+      "id": "CHQ-102",
+      "utilisé": true,
+      "photoFront": "https://via.placeholder.com/200x120?text=Chèque+Front",
+      "photoBack": "https://via.placeholder.com/200x120?text=Chèque+Back",
+      "nom": "Roy",
+      "prenom": "Philippe",
+      "montant": "2 750$",
+      "dateEmission": "2025-04-12",
+      "banque": "Banque Nationale"
     }
-
-    button {
-      padding: 12px 24px;
-      margin: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      background-color: #002c5a;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #003b80;
-    }
-
-    #resultats {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0, 44, 90, 0.1);
-      margin-bottom: 25px;
-      width: 600px;
-      text-align: left;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeIn 0.4s ease-in;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0, 44, 90, 0.15);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .photo-profil {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ccc;
-    }
-
-    .nom {
-      font-size: 22px;
-      font-weight: bold;
-      color: #002c5a;
-    }
-
-    .nom.expired,
-    .nom.utilisé {
-      color: crimson;
-    }
-
-    .details {
-      font-size: 15px;
-      margin-top: 5px;
-    }
-
-    .images {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .images img {
-      width: 200px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .used-button, .copy-button {
-      margin-top: 10px;
-      padding: 6px 14px;
-      background-color: #aaa;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
-      cursor: pointer;
-    }
-
-    .used-button:hover,
-    .copy-button:hover {
-      background-color: #888;
-    }
-
-    .id-num {
-      margin-top: 10px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .id-num span {
-      font-weight: bold;
-      color: #444;
-    }
-
-    #dynamic-message {
-      position: fixed;
-      bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #002c5a;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      font-size: 16px;
-      opacity: 0;
-      transition: all 0.5s ease;
-      z-index: 9999;
-    }
-
-    #dynamic-message.show {
-      bottom: 30px;
-      opacity: 1;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>Identification du Quénada</h1>
-
-  <button onclick="afficherIDs()">ID</button>
-  <button onclick="afficherCheques()">Chèques</button>
-
-  <div id="resultats"></div>
-  <div id="dynamic-message">Message</div>
-
-  <script>
-    let ids = [];
-    let cheques = [];
-
-    // Charger les données depuis le fichier database.json
-    fetch('database.json')
-      .then(response => response.json())
-      .then(data => {
-        ids = data.ids;
-        cheques = data.cheques;
-      })
-      .catch(error => {
-        console.error('Erreur lors du chargement des données:', error);
-      });
-
-    function showMessage(message) {
-      const msgBox = document.getElementById("dynamic-message");
-      msgBox.textContent = message;
-      msgBox.classList.add("show");
-      setTimeout(() => {
-        msgBox.classList.remove("show");
-      }, 2000);
-    }
-
-    function copierTexte(texte) {
-      navigator.clipboard.writeText(texte);
-      showMessage("Texte copié !");
-    }
-
-    function afficherIDs() {
-      const container = document.getElementById("resultats");
-      container.innerHTML = "";
-
-      const today = new Date();
-
-      ids.forEach((id) => {
-        // Calculer la date d'expiration (ajout d'un an à la date d'émission)
-        const expirationDate = new Date(id.dateEmission);
-        expirationDate.setFullYear(expirationDate.getFullYear() + 1);  // Exemple: expiration 1 an après l'émission
-
-        const expired = expirationDate < today;  // Vérifier si l'ID est expiré
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const detailsHTML = `
-          <div class="details">Date d'émission : ${id.dateEmission}</div>
-          <div class="details">Date d'expiration : ${expirationDate.toLocaleDateString()}</div>
-        `;
-
-        card.innerHTML = `
-          <div class="header">
-            <img src="${id.photoVisage}" class="photo-profil" />
-            <div>
-              <div class="nom ${expired ? 'expired' : ''}">${id.nom}, ${id.prenom}</div>
-              ${detailsHTML}
-              <div class="id-num">
-                <span>Numéro ID : ${id.id}</span>
-                <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${id.id}')">Copier</button>
-              </div>
-            </div>
-          </div>
-        `;
-
-        let opened = false;
-        card.addEventListener("click", () => {
-          if (!opened) {
-            const images = document.createElement("div");
-            images.className = "images";
-            images.innerHTML = `
-              <img src="${id.photoFront}" alt="Recto ID">
-              <img src="${id.photoBack}" alt="Verso ID">
-            `;
-            card.appendChild(images);
-            opened = true;
-          } else {
-            card.querySelector(".images")?.remove();
-            opened = false;
-          }
-        });
-
-        container.appendChild(card);
-      });
-    }
-
-    function afficherCheques() {
-      const container = document.getElementById("resultats");
-      container.innerHTML = "";
-
-      cheques.forEach((ch) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <div class="nom ${ch.utilisé ? 'utilisé' : ''}">${ch.nom}, ${ch.prenom}</div>
-          <div class="details">Montant : ${ch.montant}</div>
-          <div class="details">Date d’émission : ${ch.dateEmission}</div>
-          <div class="details">Banque : ${ch.banque}</div>
-          <div class="id-num">
-            <span>Numéro chèque : ${ch.id}</span>
-            <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${ch.id}')">Copier</button>
-          </div>
-        `;
-
-        let ouvert = false;
-
-        card.addEventListener("click", () => {
-          if (!ouvert) {
-            const images = document.createElement("div");
-            images.className = "images";
-            images.innerHTML = `
-              <img src="${ch.photoFront}" alt="Chèque recto">
-              <img src="${ch.photoBack}" alt="Chèque verso">
-            `;
-
-            const btn = document.createElement("button");
-            btn.className = "used-button";
-            btn.innerText = ch.utilisé ? "Marqué comme NON utilisé" : "Marquer comme utilisé";
-            btn.onclick = (e) => {
-              e.stopPropagation();
-              ch.utilisé = !ch.utilisé;
-              btn.innerText = ch.utilisé ? "Marqué comme NON utilisé" : "Marquer comme utilisé";
-              card.querySelector(".nom").classList.toggle("utilisé", ch.utilisé);
-              showMessage(`État mis à jour : ${ch.utilisé ? "utilisé" : "non utilisé"}`);
-            };
-
-            card.appendChild(images);
-            card.appendChild(btn);
-            ouvert = true;
-          } else {
-            card.querySelector(".images")?.remove();
-            card.querySelector(".used-button")?.remove();
-            ouvert = false;
-          }
-        });
-
-        container.appendChild(card);
-      });
-    }
-  </script>
-
-</body>
-</html>
+  ]
+}
