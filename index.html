@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Identification du Quénada v.2.8</title>
+  <title>Identification du Quénada</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -172,19 +172,55 @@
   <div id="dynamic-message">Message</div>
 
   <script>
-    let ids = [];
-    let cheques = [];
+    const ids = [
+      {
+        id: "ID-001",
+        profil: "https://via.placeholder.com/80x80.png?text=Photo+ID",
+        photoFront: "https://via.placeholder.com/200x120?text=Front+ID",
+        photoBack: "https://via.placeholder.com/200x120?text=Back+ID",
+        nom: "Lamarre",
+        prenom: "Sophie",
+        dateNaissance: "1992-05-10",
+        lieuNaissance: "Sherbrooke",
+        expiration: "2024-05-01"
+      },
+      {
+        id: "ID-002",
+        profil: "https://via.placeholder.com/80x80.png?text=Photo+ID",
+        photoFront: "https://via.placeholder.com/200x120?text=Front+ID",
+        photoBack: "https://via.placeholder.com/200x120?text=Back+ID",
+        nom: "Gagnon",
+        prenom: "Marc",
+        dateNaissance: "1990-08-22",
+        lieuNaissance: "Laval",
+        expiration: "2026-11-01"
+      }
+    ];
 
-    // Charger les données depuis le fichier database.json
-    fetch('database.json')
-      .then(response => response.json())
-      .then(data => {
-        ids = data.ids;
-        cheques = data.cheques;
-      })
-      .catch(error => {
-        console.error('Erreur lors du chargement des données:', error);
-      });
+    const cheques = [
+      {
+        id: "CHQ-101",
+        photoFront: "https://via.placeholder.com/200x120?text=Chèque+Front",
+        photoBack: "https://via.placeholder.com/200x120?text=Chèque+Back",
+        nom: "Dufresne",
+        prenom: "Amélie",
+        montant: "1 100$",
+        dateEmission: "2025-03-01",
+        banque: "Desjardins",
+        utilisé: false
+      },
+      {
+        id: "CHQ-102",
+        photoFront: "https://via.placeholder.com/200x120?text=Chèque+Front",
+        photoBack: "https://via.placeholder.com/200x120?text=Chèque+Back",
+        nom: "Roy",
+        prenom: "Philippe",
+        montant: "2 750$",
+        dateEmission: "2025-04-12",
+        banque: "Banque Nationale",
+        utilisé: true
+      }
+    ];
 
     function showMessage(message) {
       const msgBox = document.getElementById("dynamic-message");
@@ -204,25 +240,20 @@
       const container = document.getElementById("resultats");
       container.innerHTML = "";
 
-      const today = new Date();
-
       ids.forEach((id) => {
-        // Calculer la date d'expiration (ajout d'un an à la date d'émission)
-        const expirationDate = new Date(id.dateEmission);
-        expirationDate.setFullYear(expirationDate.getFullYear() + 1);  // Exemple: expiration 1 an après l'émission
-
-        const expired = expirationDate < today;  // Vérifier si l'ID est expiré
+        const expired = new Date(id.expiration) < new Date();
         const card = document.createElement("div");
         card.className = "card";
 
         const detailsHTML = `
-          <div class="details">Date d'émission : ${id.dateEmission}</div>
-          <div class="details">Date d'expiration : ${expirationDate.toLocaleDateString()}</div>
+          <div class="details">Date de naissance : ${id.dateNaissance}</div>
+          <div class="details">Lieu de naissance : ${id.lieuNaissance}</div>
+          <div class="details">Expiration : ${id.expiration}</div>
         `;
 
         card.innerHTML = `
           <div class="header">
-            <img src="${id.photoVisage}" class="photo-profil" />
+            <img src="${id.profil}" class="photo-profil" />
             <div>
               <div class="nom ${expired ? 'expired' : ''}">${id.nom}, ${id.prenom}</div>
               ${detailsHTML}
