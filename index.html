@@ -204,20 +204,25 @@
       const container = document.getElementById("resultats");
       container.innerHTML = "";
 
+      const today = new Date();
+
       ids.forEach((id) => {
-        const expired = new Date(id.expiration) < new Date();
+        // Calculer la date d'expiration (ajout d'un an à la date d'émission)
+        const expirationDate = new Date(id.dateEmission);
+        expirationDate.setFullYear(expirationDate.getFullYear() + 1);  // Exemple: expiration 1 an après l'émission
+
+        const expired = expirationDate < today;  // Vérifier si l'ID est expiré
         const card = document.createElement("div");
         card.className = "card";
 
         const detailsHTML = `
-          <div class="details">Date de naissance : ${id.dateNaissance}</div>
-          <div class="details">Lieu de naissance : ${id.lieuNaissance}</div>
-          <div class="details">Expiration : ${id.expiration}</div>
+          <div class="details">Date d'émission : ${id.dateEmission}</div>
+          <div class="details">Date d'expiration : ${expirationDate.toLocaleDateString()}</div>
         `;
 
         card.innerHTML = `
           <div class="header">
-            <img src="${id.profil}" class="photo-profil" />
+            <img src="${id.photoVisage}" class="photo-profil" />
             <div>
               <div class="nom ${expired ? 'expired' : ''}">${id.nom}, ${id.prenom}</div>
               ${detailsHTML}
