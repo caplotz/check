@@ -172,55 +172,19 @@
   <div id="dynamic-message">Message</div>
 
   <script>
-    const ids = [
-      {
-        id: "ID-001",
-        profil: "https://via.placeholder.com/80x80.png?text=Photo+ID",
-        photoFront: "https://via.placeholder.com/200x120?text=Front+ID",
-        photoBack: "https://via.placeholder.com/200x120?text=Back+ID",
-        nom: "Lamarre",
-        prenom: "Sophie",
-        dateNaissance: "1992-05-10",
-        lieuNaissance: "Sherbrooke",
-        expiration: "2024-05-01"
-      },
-      {
-        id: "ID-002",
-        profil: "https://via.placeholder.com/80x80.png?text=Photo+ID",
-        photoFront: "https://via.placeholder.com/200x120?text=Front+ID",
-        photoBack: "https://via.placeholder.com/200x120?text=Back+ID",
-        nom: "Gagnon",
-        prenom: "Marc",
-        dateNaissance: "1990-08-22",
-        lieuNaissance: "Laval",
-        expiration: "2026-11-01"
-      }
-    ];
+    let ids = [];
+    let cheques = [];
 
-    const cheques = [
-      {
-        id: "CHQ-101",
-        photoFront: "https://via.placeholder.com/200x120?text=Chèque+Front",
-        photoBack: "https://via.placeholder.com/200x120?text=Chèque+Back",
-        nom: "Dufresne",
-        prenom: "Amélie",
-        montant: "1 100$",
-        dateEmission: "2025-03-01",
-        banque: "Desjardins",
-        utilisé: false
-      },
-      {
-        id: "CHQ-102",
-        photoFront: "https://via.placeholder.com/200x120?text=Chèque+Front",
-        photoBack: "https://via.placeholder.com/200x120?text=Chèque+Back",
-        nom: "Roy",
-        prenom: "Philippe",
-        montant: "2 750$",
-        dateEmission: "2025-04-12",
-        banque: "Banque Nationale",
-        utilisé: true
-      }
-    ];
+    // Charger les données depuis le fichier database.json
+    fetch('database.json')
+      .then(response => response.json())
+      .then(data => {
+        ids = data.ids;
+        cheques = data.cheques;
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement des données:', error);
+      });
 
     function showMessage(message) {
       const msgBox = document.getElementById("dynamic-message");
