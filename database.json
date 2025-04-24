@@ -1,0 +1,46 @@
+{
+  "ids": [
+    {
+      "id": "ID-001",
+      "dateEmission": "2024-05-01",
+      "photoFront": "https://via.placeholder.com/200x120?text=Front+ID",
+      "photoBack": "https://via.placeholder.com/200x120?text=Back+ID",
+      "photoVisage": "https://via.placeholder.com/80x80.png?text=Photo+ID",
+      "nom": "Lamarre",
+      "prenom": "Sophie"
+    },
+    {
+      "id": "ID-002",
+      "dateEmission": "2026-11-01",
+      "photoFront": "https://via.placeholder.com/200x120?text=Front+ID",
+      "photoBack": "https://via.placeholder.com/200x120?text=Back+ID",
+      "photoVisage": "https://via.placeholder.com/80x80.png?text=Photo+ID",
+      "nom": "Gagnon",
+      "prenom": "Marc"
+    }
+  ],
+  "cheques": [
+    {
+      "id": "CHQ-101",
+      "utilisé": false,
+      "photoFront": "https://via.placeholder.com/200x120?text=Chèque+Front",
+      "photoBack": "https://via.placeholder.com/200x120?text=Chèque+Back",
+      "nom": "Dufresne",
+      "prenom": "Amélie",
+      "montant": "1 100$",
+      "dateEmission": "2025-03-01",
+      "banque": "Desjardins"
+    },
+    {
+      "id": "CHQ-102",
+      "utilisé": true,
+      "photoFront": "https://via.placeholder.com/200x120?text=Chèque+Front",
+      "photoBack": "https://via.placeholder.com/200x120?text=Chèque+Back",
+      "nom": "Roy",
+      "prenom": "Philippe",
+      "montant": "2 750$",
+      "dateEmission": "2025-04-12",
+      "banque": "Banque Nationale"
+    }
+  ]
+}
