@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Identification du Quénada</title>
   <style>
-    /* Styles généraux (inchangés) */
+    /* Ton style original, inchangé */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #e8f0fe, #ffffff);
@@ -20,7 +20,7 @@
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
-    button {
+    input, button {
       padding: 12px 24px;
       margin: 10px;
       font-size: 18px;
@@ -30,6 +30,12 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
+    }
+
+    input[type="text"] {
+      background-color: #fff;
+      color: #000;
+      border: 2px solid #002c5a;
     }
 
     button:hover {
@@ -91,8 +97,7 @@
       color: #002c5a;
     }
 
-    .nom.expired,
-    .nom.utilisé {
+    .nom.expired, .nom.utilisé {
       color: crimson;
     }
 
@@ -133,8 +138,7 @@
       cursor: pointer;
     }
 
-    .used-button:hover,
-    .copy-button:hover {
+    .used-button:hover, .copy-button:hover {
       background-color: #888;
     }
 
@@ -172,7 +176,6 @@
       opacity: 1;
     }
 
-    /* Style pour l'overlay de l'image zoomée */
     #zoomedImageOverlay {
       display: none;
       position: fixed;
@@ -191,7 +194,6 @@
       max-width: 90%;
       max-height: 80%;
       object-fit: contain;
-      transition: transform 0.3s ease;
     }
 
     #zoomedImageOverlay .close {
@@ -205,26 +207,24 @@
       padding: 10px 20px;
       border-radius: 50%;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
 
     #zoomedImageOverlay .close:hover {
       background-color: rgba(255, 0, 0, 0.8);
     }
-
   </style>
 </head>
 <body>
 
   <h1>Identification du Quénada</h1>
 
+  <input type="text" id="searchInput" placeholder="Rechercher par nom complet..." oninput="filtrerResultats()">
   <button onclick="afficherIDs()">ID</button>
   <button onclick="afficherCheques()">Chèques</button>
 
   <div id="resultats"></div>
   <div id="dynamic-message">Message</div>
 
-  <!-- Overlay pour afficher l'image zoomée -->
   <div id="zoomedImageOverlay" onclick="fermerZoom()">
     <img id="zoomedImage" src="" alt="Zoomed Image" />
     <button class="close" onclick="fermerZoom(event)">X</button>
@@ -270,6 +270,8 @@
       }
     ];
 
+    let currentType = "id";
+
     function showMessage(message) {
       const msgBox = document.getElementById("dynamic-message");
       msgBox.textContent = message;
@@ -285,40 +287,57 @@
     }
 
     function afficherIDs() {
+      currentType = "id";
+      afficherCartes(ids);
+    }
+
+    function afficherCheques() {
+      currentType = "cheque";
+      afficherCartes(cheques);
+    }
+
+    function afficherCartes(data) {
       const container = document.getElementById("resultats");
       container.innerHTML = "";
 
-      ids.forEach((id) => {
-        const expired = new Date(id.expiration) < new Date();
+      data.forEach((item) => {
+        const expired = item.expiration && new Date(item.expiration) < new Date();
         const card = document.createElement("div");
         card.className = "card";
 
-        const detailsHTML = `
-          <div class="details">Date de naissance : ${id.dateNaissance}</div>
-          <div class="details">Lieu de naissance : ${id.lieuNaissance}</div>
-          <div class="details">Expiration : ${id.expiration}</div>
-        `;
+        const fullName = `${item.nom}, ${item.prenom}`;
+        const detailsHTML = currentType === "id"
+          ? `
+              <div class="details">Date de naissance : ${item.dateNaissance}</div>
+              <div class="details">Lieu de naissance : ${item.lieuNaissance}</div>
+              <div class="details">Expiration : ${item.expiration}</div>
+            `
+          : `
+              <div class="details">Montant : ${item.montant}</div>
+              <div class="details">Date d’émission : ${item.dateEmission}</div>
+              <div class="details">Banque : ${item.banque}</div>
+              <div class="details">⚠️ Envoyez un message à Roman du code une fois le chèque utilisé ⚠️</div>
+            `;
 
         card.innerHTML = `
           <div class="header">
-            <img src="${id.profil}" class="photo-profil" />
+            <img src="${item.profil || item.photoFront}" class="photo-profil" />
             <div>
-              <div class="nom ${expired ? 'expired' : ''}">${id.nom}, ${id.prenom}</div>
+              <div class="nom ${expired || item.utilisé ? 'expired utilisé' : ''}">${fullName}</div>
               ${detailsHTML}
               <div class="id-num">
-                <span>Numéro ID : ${id.id}</span>
-                <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${id.id}')">Copier</button>
+                <span>${currentType === "id" ? 'Numéro ID' : 'Numéro chèque'} : ${item.id}</span>
+                <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${item.id}')">Copier</button>
               </div>
             </div>
           </div>
         `;
 
-        // Ajout des images front et back avec zoom
         const images = document.createElement("div");
         images.className = "images";
         images.innerHTML = `
-          <img src="${id.photoFront}" onclick="zoomImage('${id.photoFront}')">
-          <img src="${id.photoBack}" onclick="zoomImage('${id.photoBack}')">
+          <img src="${item.photoFront}" onclick="zoomImage('${item.photoFront}')">
+          <img src="${item.photoBack}" onclick="zoomImage('${item.photoBack}')">
         `;
         card.appendChild(images);
 
@@ -326,37 +345,14 @@
       });
     }
 
-    function afficherCheques() {
-      const container = document.getElementById("resultats");
-      container.innerHTML = "";
-
-      cheques.forEach((ch) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <div class="nom ${ch.utilisé ? 'utilisé' : ''}">${ch.nom}, ${ch.prenom}</div>
-          <div class="details">Montant : ${ch.montant}</div>
-          <div class="details">Date d’émission : ${ch.dateEmission}</div>
-          <div class="details">Banque : ${ch.banque}</div>
-          <div class="details">⚠️⚠️⚠️ Envoyez un message à Roman du code une fois le chèque utilisé ⚠️⚠️⚠️</div>
-          <div class="id-num">
-            <span>Numéro chèque : ${ch.id}</span>
-            <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${ch.id}')">Copier</button>
-          </div>
-        `;
-
-        // Ajout des images front et back avec zoom
-        const images = document.createElement("div");
-        images.className = "images";
-        images.innerHTML = `
-          <img src="${ch.photoFront}" onclick="zoomImage('${ch.photoFront}')">
-          <img src="${ch.photoBack}" onclick="zoomImage('${ch.photoBack}')">
-        `;
-        card.appendChild(images);
-
-        container.appendChild(card);
+    function filtrerResultats() {
+      const terme = document.getElementById("searchInput").value.toLowerCase();
+      const source = currentType === "id" ? ids : cheques;
+      const filtres = source.filter(item => {
+        const nomComplet = `${item.nom} ${item.prenom}`.toLowerCase();
+        return nomComplet.includes(terme);
       });
+      afficherCartes(filtres);
     }
 
     function zoomImage(src) {
@@ -370,6 +366,9 @@
       event.stopPropagation();
       document.getElementById("zoomedImageOverlay").style.display = "none";
     }
+
+    // Démarrage automatique avec les IDs
+    afficherIDs();
   </script>
 
 </body>
