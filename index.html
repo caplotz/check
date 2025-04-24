@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Identification du Quénada</title>
   <style>
+    /* Styles généraux (inchangés) */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #e8f0fe, #ffffff);
@@ -113,6 +114,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
 
     .images img:hover {
@@ -169,6 +171,47 @@
       bottom: 30px;
       opacity: 1;
     }
+
+    /* Style pour l'overlay de l'image zoomée */
+    #zoomedImageOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      cursor: pointer;
+    }
+
+    #zoomedImageOverlay img {
+      max-width: 90%;
+      max-height: 80%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    #zoomedImageOverlay .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      font-size: 24px;
+      padding: 10px 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #zoomedImageOverlay .close:hover {
+      background-color: rgba(255, 0, 0, 0.8);
+    }
+
   </style>
 </head>
 <body>
@@ -180,6 +223,12 @@
 
   <div id="resultats"></div>
   <div id="dynamic-message">Message</div>
+
+  <!-- Overlay pour afficher l'image zoomée -->
+  <div id="zoomedImageOverlay" onclick="fermerZoom()">
+    <img id="zoomedImage" src="" alt="Zoomed Image" />
+    <button class="close" onclick="fermerZoom(event)">X</button>
+  </div>
 
   <script>
     const ids = [
@@ -275,22 +324,14 @@
           </div>
         `;
 
-        let opened = false;
-        card.addEventListener("click", () => {
-          if (!opened) {
-            const images = document.createElement("div");
-            images.className = "images";
-            images.innerHTML = `
-              <img src="${id.photoFront}" alt="Recto ID">
-              <img src="${id.photoBack}" alt="Verso ID">
-            `;
-            card.appendChild(images);
-            opened = true;
-          } else {
-            card.querySelector(".images")?.remove();
-            opened = false;
-          }
-        });
+        // Ajout des images front et back avec zoom
+        const images = document.createElement("div");
+        images.className = "images";
+        images.innerHTML = `
+          <img src="${id.photoFront}" onclick="zoomImage('${id.photoFront}')">
+          <img src="${id.photoBack}" onclick="zoomImage('${id.photoBack}')">
+        `;
+        card.appendChild(images);
 
         container.appendChild(card);
       });
@@ -315,40 +356,29 @@
           </div>
         `;
 
-        let ouvert = false;
-
-        card.addEventListener("click", () => {
-          if (!ouvert) {
-            const images = document.createElement("div");
-            images.className = "images";
-            images.innerHTML = `
-              <img src="${ch.photoFront}" alt="Chèque recto">
-              <img src="${ch.photoBack}" alt="Chèque verso">
-            `;
-
-            const btn = document.createElement("button");
-            btn.className = "used-button";
-            btn.innerText = ch.utilisé ? "Marqué comme NON utilisé" : "Marquer comme utilisé";
-            btn.onclick = (e) => {
-              e.stopPropagation();
-              ch.utilisé = !ch.utilisé;
-              btn.innerText = ch.utilisé ? "Marqué comme NON utilisé" : "Marquer comme utilisé";
-              card.querySelector(".nom").classList.toggle("utilisé", ch.utilisé);
-              showMessage(`État mis à jour : ${ch.utilisé ? "utilisé" : "non utilisé"}`);
-            };
-
-            card.appendChild(images);
-            card.appendChild(btn);
-            ouvert = true;
-          } else {
-            card.querySelector(".images")?.remove();
-            card.querySelector(".used-button")?.remove();
-            ouvert = false;
-          }
-        });
+        // Ajout des images front et back avec zoom
+        const images = document.createElement("div");
+        images.className = "images";
+        images.innerHTML = `
+          <img src="${ch.photoFront}" onclick="zoomImage('${ch.photoFront}')">
+          <img src="${ch.photoBack}" onclick="zoomImage('${ch.photoBack}')">
+        `;
+        card.appendChild(images);
 
         container.appendChild(card);
       });
+    }
+
+    function zoomImage(src) {
+      const overlay = document.getElementById("zoomedImageOverlay");
+      const zoomedImage = document.getElementById("zoomedImage");
+      zoomedImage.src = src;
+      overlay.style.display = "flex";
+    }
+
+    function fermerZoom(event) {
+      event.stopPropagation();
+      document.getElementById("zoomedImageOverlay").style.display = "none";
     }
   </script>
 
