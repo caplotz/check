@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Identification du Quénada</title>
+  <style>
+    /* Ajoute tes styles CSS ici comme avant */
+  </style>
+</head>
+<body>
+  <h1>Identification du Quénada</h1>
+
+  <button onclick="afficherIDs()">ID</button>
+  <button onclick="afficherCheques()">Chèques</button>
+
+  <div id="resultats"></div>
+  <div id="dynamic-message">Message</div>
+
+  <script>
+    let db = {};
+
+    // Charger la base de données JSON (en mode local pour ce test)
+    fetch('database.json') // Si tu veux utiliser un fichier local
+      .then(response => response.json())
+      .then(data => {
+        db = data;
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement de la base de données:', error);
+      });
+
+    // Afficher les IDs
+    function afficherIDs() {
+      const container = document.getElementById("resultats");
+      container.innerHTML = "";
+      
+      db.ids.forEach((id) => {
+        const expired = new Date(id.dateEmission) < new Date();
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <div class="header">
+            <img src="${id.photoVisage}" class="photo-profil" />
+            <div>
+              <div class="nom ${expired ? 'expired' : ''}">${id.nom}, ${id.prenom}</div>
+              <div class="details">Date de naissance : ${id.dateEmission}</div>
+              <div class="details">Expiration : ${id.dateEmission}</div>
+              <div class="id-num">
+                <span>Numéro ID : ${id.id}</span>
+                <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${id.id}')">Copier</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        let opened = false;
+        card.addEventListener("click", () => {
+          if (!opened) {
+            const images = document.createElement("div");
+            images.className = "images";
+            images.innerHTML = `
+              <img src="${id.photoFront}" alt="Recto ID">
+              <img src="${id.photoBack}" alt="Verso ID">
+            `;
+            card.appendChild(images);
+            opened = true;
+          } else {
+            card.querySelector(".images")?.remove();
+            opened = false;
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // Afficher les Chèques
+    function afficherCheques() {
+      const container = document.getElementById("resultats");
+      container.innerHTML = "";
+
+      db.cheques.forEach((ch) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <div class="nom ${ch.utilisé ? 'utilisé' : ''}">${ch.nom}, ${ch.prenom}</div>
+          <div class="details">Montant : ${ch.montant}</div>
+          <div class="details">Date d’émission : ${ch.dateEmission}</div>
+          <div class="details">Banque : ${ch.banque}</div>
+          <div class="id-num">
+            <span>Numéro chèque : ${ch.id}</span>
+            <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${ch.id}')">Copier</button>
+          </div>
+        `;
+
+        let opened = false;
+
+        card.addEventListener("click", () => {
+          if (!ouvert) {
+            const images = document.createElement("div");
+            images.className = "images";
+            images.innerHTML = `
+              <img src="${ch.photoFront}" alt="Chèque recto">
+              <img src="${ch.photoBack}" alt="Chèque verso">
+            `;
+            card.appendChild(images);
+            ouvert = true;
+          } else {
+            card.querySelector(".images")?.remove();
+            ouvert = false;
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function copierTexte(texte) {
+      navigator.clipboard.writeText(texte);
+      showMessage("Texte copié !");
+    }
+
+    function showMessage(message) {
+      const msgBox = document.getElementById("dynamic-message");
+      msgBox.textContent = message;
+      msgBox.classList.add("show");
+      setTimeout(() => {
+        msgBox.classList.remove("show");
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
