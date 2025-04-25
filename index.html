@@ -329,7 +329,7 @@
               <div class="nom ${expired || item.utilisé ? 'expired utilisé' : ''}">${fullName}</div>
               ${detailsHTML}
               <div class="id-num">
-                <span>${currentType === "id" ? 'Code Q' : 'Code d'authentification'} : ${item.id}</span>
+                <span>${currentType === "id" ? 'Numéro ID' : 'Numéro chèque'} : ${item.id}</span>
                 <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${item.id}')">Copier</button>
               </div>
             </div>
