@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Identification du Quénada</title>
   <style>
-    /* Ton style original, inchangé */
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #e8f0fe, #ffffff);
@@ -112,8 +112,14 @@
       color: #FF0000;
     }
 
-    .details {
+    .zdetails {
       font-size: 15px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .kdetails {
+      font-size: 20px;
       font-weight: bold;
       margin-top: 5px;
     }
@@ -269,9 +275,11 @@
     ];
 
     const cheques = [
+      /* Si le chèque permet tout le monde de l'encaisser, mettre "Non défini" comme destinataire */
       {
         id: "QUE82_382_3029-594_43984-208761",
         cv: "BR-293AS20DL",
+        destin: "Non défini",
         profil: "photo/check1/a.png",
         photoFront: "photo/check1/fr.png",
         photoBack: "photo/check1/ba.png",
@@ -327,11 +335,12 @@
               <div class="details">Expiration : ${item.expiration}</div>
             `
           : `
+          <div class="kdetails">Destiné à ${item.destin}</div>
               <div class="details">Montant : ${item.montant}</div>
               <div class="details">Date d’émission : ${item.dateEmission}</div>
               <div class="details">Banque : ${item.banque}</div>
               <div class="idetails">⚠️ Envoyez un message à Roman du code une fois le chèque utilisé ⚠️</div>
-              <div class="details">Code de verification : ${item.cv}</div>
+              <div class="zdetails">Code de verification : ${item.cv}</div>
             `;
 
         card.innerHTML = `
