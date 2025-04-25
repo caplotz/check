@@ -229,31 +229,113 @@
     #zoomedImageOverlay .close:hover {
       background-color: rgba(255, 0, 0, 0.8);
     }
+
+    /* Nouveau style pour la boîte de saisie du mot de passe */
+    .password-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .password-container input {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      width: 300px;
+      border-radius: 8px;
+      border: 2px solid #002c5a;
+    }
+
+    .password-container button {
+      background-color: #002c5a;
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .password-container button:hover {
+      background-color: #003b80;
+    }
+
+    .password-container .message {
+      margin-top: 10px;
+      font-size: 18px;
+      color: green;
+    }
+
+    .password-container .error {
+      margin-top: 10px;
+      font-size: 18px;
+      color: red;
+    }
+
+    /* Masquer le contenu par défaut */
+    #content {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
   <h1>Identification du Quénada</h1>
 
-  <input type="text" id="searchInput" placeholder="Rechercher par nom complet..." oninput="filtrerResultats()">
-  <button onclick="afficherIDs()">ID</button>
-  <button onclick="afficherCheques()">Chèques</button>
+  <!-- Nouveau champ pour mot de passe -->
+  <div class="password-container" id="passwordContainer">
+    <label for="passwordInput">ENTRER MOT DE PASSE :</label>
+    <input type="text" id="passwordInput" placeholder="Entrez le mot de passe">
+    <button onclick="validerMotDePasse()">Valider</button>
+    <div id="passwordMessage" class="message"></div>
+  </div>
 
-  <div id="resultats"></div>
-  <div id="dynamic-message">Message</div>
+  <!-- Contenu caché, ne sera affiché que si le mot de passe est correct -->
+  <div id="content">
+    <input type="text" id="searchInput" placeholder="Rechercher par nom complet..." oninput="filtrerResultats()">
+    <div id="idSection" style="display:none;">
+      <button onclick="afficherIDs()">ID</button>
+    </div>
+    <div id="chequeSection" style="display:none;">
+      <button onclick="afficherCheques()">Chèques</button>
+    </div>
 
-  <div id="zoomedImageOverlay" onclick="fermerZoom()">
-    <img id="zoomedImage" src="" alt="Zoomed Image" />
-    <button class="close" onclick="fermerZoom(event)">X</button>
+    <div id="resultats"></div>
+    <div id="dynamic-message">Message</div>
+
+    <div id="zoomedImageOverlay" onclick="fermerZoom()">
+      <img id="zoomedImage" src="" alt="Zoomed Image" />
+      <button class="close" onclick="fermerZoom(event)">X</button>
+    </div>
   </div>
 
   <script>
-    // MOT DE PASSE 🔒
-    const correctPassword = "Quénada.gov==2$";
-    const userInput = prompt("Veuillez entrer le mot de passe pour accéder au contenu :");
-    if (userInput !== correctPassword) {
-      document.body.innerHTML = "<h2 style='color: crimson; text-align: center; margin-top: 50px;'>Accès refusé. Mot de passe incorrect.</h2>";
-      throw new Error("Accès refusé");
+    // Mots de passe pour accéder au contenu
+    const motDePasseTotal = "Quénada.gov==2$";
+    const motDePasseLimité = "Paie=Dimworld$25";
+
+    function validerMotDePasse() {
+      const motDePasseSaisi = document.getElementById("passwordInput").value;
+      const messageDiv = document.getElementById("passwordMessage");
+      const passwordContainer = document.getElementById("passwordContainer");
+
+      if (motDePasseSaisi === motDePasseTotal) {
+        messageDiv.textContent = "Mot de passe accepté ! Accès complet.";
+        messageDiv.className = "message"; // Succès
+        document.getElementById("content").style.display = "block"; // Afficher le contenu
+        document.getElementById("idSection").style.display = "block"; // Afficher la section ID
+        document.getElementById("chequeSection").style.display = "block"; // Afficher la section des chèques
+        passwordContainer.style.display = "none"; // Enlever le mot de passe
+      } else if (motDePasseSaisi === motDePasseLimité) {
+        messageDiv.textContent = "Mot de passe accepté ! Accès limité.";
+        messageDiv.className = "message"; // Succès
+        document.getElementById("content").style.display = "block"; // Afficher le contenu
+        document.getElementById("idSection").style.display = "block"; // Afficher la section ID
+        passwordContainer.style.display = "none"; // Enlever le mot de passe
+      } else {
+        messageDiv.textContent = "Mot de passe incorrect !";
+        messageDiv.className = "error"; // Erreur
+      }
     }
 
     const ids = [
@@ -352,65 +434,65 @@
               <div class="details">Expiration : ${item.expiration}</div>
             `
           : `
-              <div class="kdetails">Destiné à; ${item.destin}</div>
+          <div class="kdetails">Destiné à; ${item.destin}</div>
               <div class="details">Montant : ${item.montant}</div>
               <div class="details">Date d’émission : ${item.dateEmission}</div>
               <div class="details">Banque : ${item.banque}</div>
               <div class="idetails">⚠️ Envoyez un message à Roman du code une fois le chèque utilisé ⚠️</div>
-              <div class="zdetails">Code de verification : ${item.cv}</div>
+              <div class="zdetails">S'assurer de l'utilisation via l'ID</div>
             `;
 
         card.innerHTML = `
           <div class="header">
-            <img src="${item.profil || item.photoFront}" class="photo-profil" />
+            <img src="${item.profil}" class="photo-profil" alt="Profil">
             <div>
-              <div class="nom ${expired || item.utilisé ? 'expired utilisé' : ''}">${fullName}</div>
+              <div class="nom ${expired ? 'expired' : ''}">${fullName}</div>
               ${detailsHTML}
-              <div class="id-num">
-                <span>${currentType === "id" ? 'Numéro ID' : 'Numéro chèque'} : ${item.id}</span>
-                <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${item.id}')">Copier</button>
-              </div>
             </div>
+          </div>
+          <div class="images">
+            <img src="${item.photoFront}" alt="Image Front" onclick="zoomImage('${item.photoFront}')">
+            <img src="${item.photoBack}" alt="Image Back" onclick="zoomImage('${item.photoBack}')">
+          </div>
+          <div class="id-num">
+            <span>ID:</span><span>${item.id}</span>
+            <button class="copy-button" onclick="copierTexte('${item.id}')">Copier l'ID</button>
           </div>
         `;
 
-        const images = document.createElement("div");
-        images.className = "images";
-        images.innerHTML = `
-          <img src="${item.photoFront}" onclick="zoomImage('${item.photoFront}')">
-          <img src="${item.photoBack}" onclick="zoomImage('${item.photoBack}')">
-        `;
-        card.appendChild(images);
+        if (expired) {
+          card.querySelector(".nom").classList.add("expired");
+        }
 
         container.appendChild(card);
       });
     }
 
-    function filtrerResultats() {
-      const terme = document.getElementById("searchInput").value.toLowerCase();
-      const source = currentType === "id" ? ids : cheques;
-      const filtres = source.filter(item => {
-        const nomComplet = `${item.nom} ${item.prenom}`.toLowerCase();
-        return nomComplet.includes(terme);
-      });
-      afficherCartes(filtres);
-    }
-
     function zoomImage(src) {
-      const overlay = document.getElementById("zoomedImageOverlay");
+      const zoomOverlay = document.getElementById("zoomedImageOverlay");
       const zoomedImage = document.getElementById("zoomedImage");
       zoomedImage.src = src;
-      overlay.style.display = "flex";
+      zoomOverlay.style.display = "flex";
     }
 
     function fermerZoom(event) {
-      event.stopPropagation();
-      document.getElementById("zoomedImageOverlay").style.display = "none";
+      if (event.target.id === "zoomedImageOverlay" || event.target.className === "close") {
+        document.getElementById("zoomedImageOverlay").style.display = "none";
+      }
     }
 
-    // Démarrage automatique avec les IDs
-    afficherIDs();
+    function filtrerResultats() {
+      const searchInput = document.getElementById("searchInput").value.toLowerCase();
+      const results = document.querySelectorAll("#resultats .card");
+      results.forEach(card => {
+        const fullName = card.querySelector(".nom").textContent.toLowerCase();
+        if (fullName.includes(searchInput)) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
   </script>
-
 </body>
 </html>
