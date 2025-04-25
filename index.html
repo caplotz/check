@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Identification du Quénada</title>
   <style>
-    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to right, #e8f0fe, #ffffff);
@@ -249,6 +248,14 @@
   </div>
 
   <script>
+    // MOT DE PASSE 🔒
+    const correctPassword = "Quénada.gov==2$";
+    const userInput = prompt("Veuillez entrer le mot de passe pour accéder au contenu :");
+    if (userInput !== correctPassword) {
+      document.body.innerHTML = "<h2 style='color: crimson; text-align: center; margin-top: 50px;'>Accès refusé. Mot de passe incorrect.</h2>";
+      throw new Error("Accès refusé");
+    }
+
     const ids = [
       {
         id: "ID<QUESIMARD<<KILIAN<<<<<<<<<<123893169841QUE1205119M491273<",
@@ -286,7 +293,6 @@
     ];
 
     const cheques = [
-      /* Si le chèque permet tout le monde de l'encaisser, mettre "Non défini" comme destinataire */
       {
         id: "QUE82_382_3029-594_43984-208761",
         cv: "BR-293AS20DL",
@@ -346,7 +352,7 @@
               <div class="details">Expiration : ${item.expiration}</div>
             `
           : `
-          <div class="kdetails">Destiné à; ${item.destin}</div>
+              <div class="kdetails">Destiné à; ${item.destin}</div>
               <div class="details">Montant : ${item.montant}</div>
               <div class="details">Date d’émission : ${item.dateEmission}</div>
               <div class="details">Banque : ${item.banque}</div>
