@@ -299,6 +299,9 @@
     <div id="chequeSection" style="display:none;">
       <button onclick="afficherCheques()">Chèques</button>
     </div>
+    <div id="pretSection" style="display:none;">
+      <button onclick="afficherPrêts()">Prêts</button>
+    </div>
 
     <div id="resultats"></div>
     <div id="dynamic-message">Message</div>
@@ -326,6 +329,7 @@
         document.getElementById("content").style.display = "block"; // Afficher le contenu
         document.getElementById("idSection").style.display = "block"; // Afficher la section ID
         document.getElementById("chequeSection").style.display = "block"; // Afficher la section des chèques
+        document.getElementById("pretSection").style.display = "block";
         passwordContainer.style.display = "none"; // Enlever le mot de passe
       } else if (motDePasseSaisi === motDePasseLimité) {
         messageDiv.textContent = "Mot de passe accepté ! Accès limité.";
@@ -338,6 +342,7 @@
         messageDiv.className = "message"; // Succès
         document.getElementById("content").style.display = "block"; // Afficher le contenu
         document.getElementById("chequeSection").style.display = "block"; // Afficher la section des chèques
+         document.getElementById("pretSection").style.display = "block";
         passwordContainer.style.display = "none"; // Enlever le mot de passe
       } else {
         messageDiv.textContent = "Mot de passe incorrect !";
@@ -398,6 +403,17 @@
       }
     ];
 
+    const pret = [
+      {
+        photoFront: "photo/check1/fr.png",
+        photoBack: "photo/check1/ba.png",
+        nom: "Deschênes",
+        prenom: "Thomas-Élie",
+        montant: "1 000 000 P$",
+        banque: "Banque royale",
+      }
+    ];
+
     let currentType = "id";
 
     function showMessage(message) {
@@ -422,6 +438,11 @@
     function afficherCheques() {
       currentType = "cheque";
       afficherCartes(cheques);
+    }
+
+    function afficherPret() {
+      currentType = "pret";
+      afficherCartes(pret);
     }
 
     function afficherCartes(data) {
