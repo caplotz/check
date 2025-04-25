@@ -313,6 +313,7 @@
     // Mots de passe pour accéder au contenu
     const motDePasseTotal = "Quénada.gov==2$";
     const motDePasseLimité = "Paie=Dimworld$25";
+    const motDePasseBanque = "CCC+Banque$4561";
 
     function validerMotDePasse() {
       const motDePasseSaisi = document.getElementById("passwordInput").value;
@@ -331,6 +332,12 @@
         messageDiv.className = "message"; // Succès
         document.getElementById("content").style.display = "block"; // Afficher le contenu
         document.getElementById("idSection").style.display = "block"; // Afficher la section ID
+        passwordContainer.style.display = "none"; // Enlever le mot de passe
+        } else if (motDePasseSaisi === motDePasseBanque) {
+        messageDiv.textContent = "Mot de passe accepté ! Accès de Banque.";
+        messageDiv.className = "message"; // Succès
+        document.getElementById("content").style.display = "block"; // Afficher le contenu
+        document.getElementById("chequeSection").style.display = "block"; // Afficher la section des chèques
         passwordContainer.style.display = "none"; // Enlever le mot de passe
       } else {
         messageDiv.textContent = "Mot de passe incorrect !";
