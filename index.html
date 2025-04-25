@@ -259,6 +259,7 @@
     const cheques = [
       {
         id: "QUE82_382_3029-594_43984-208761",
+        cv: "BR-293AS20DL",
         profil: "photo/check1/a.png",
         photoFront: "photo/check1/fr.png",
         photoBack: "photo/check1/ba.png",
@@ -317,6 +318,7 @@
               <div class="details">Montant : ${item.montant}</div>
               <div class="details">Date d’émission : ${item.dateEmission}</div>
               <div class="details">Banque : ${item.banque}</div>
+              <div class="details">Code de verification : ${item.cv}</div>
               <div class="details">⚠️ Envoyez un message à Roman du code une fois le chèque utilisé ⚠️</div>
             `;
 
@@ -327,7 +329,7 @@
               <div class="nom ${expired || item.utilisé ? 'expired utilisé' : ''}">${fullName}</div>
               ${detailsHTML}
               <div class="id-num">
-                <span>${currentType === "id" ? 'Numéro ID' : 'Numéro chèque'} : ${item.id}</span>
+                <span>${currentType === "id" ? 'Code Q' : 'Code d'authentification'} : ${item.id}</span>
                 <button class="copy-button" onclick="event.stopPropagation(); copierTexte('${item.id}')">Copier</button>
               </div>
             </div>
